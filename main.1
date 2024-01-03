@@ -1,0 +1,150 @@
+#include <iostream>
+
+class Date {
+private:
+    int day;
+    int month;
+    int year;
+
+public:
+    Date() : day(1), month(1), year(2000) {}
+
+    Date(int d, int m, int y) : day(d), month(m), year(y) {}
+
+    void incrementDay() {
+        day++;
+    }
+
+    Date& operator++() {
+        incrementDay();
+        return *this;
+    }
+
+    Date& operator--() {
+        day--;
+        return *this;
+    }
+
+    bool operator!=(const Date& other) const {
+        return day != other.day || month != other.month || year != other.year;
+    }
+
+    bool operator==(const Date& other) const {
+        return day == other.day && month == other.month && year == other.year;
+    }
+
+    bool operator>(const Date& other) const {
+        if (year > other.year) return true;
+        if (year < other.year) return false;
+        if (month > other.month) return true;
+        if (month < other.month) return false;
+        return day > other.day;
+    }
+
+    bool operator<(const Date& other) const {
+        if (year < other.year) return true;
+        if (year > other.year) return false;
+        if (month < other.month) return true;
+        if (month > other.month) return false;
+        return day < other.day;
+    }
+
+    friend std::istream& operator>>(std::istream& is, Date& date);
+
+    friend std::ostream& operator<<(std::ostream& os, const Date& date);
+
+    Date& operator=(const Date& other) {
+        if (this != &other) {
+            day = other.day;
+            month = other.month;
+            year = other.year;
+        }
+        return *this;
+    }
+
+    Date& operator+=(int days) {
+        for (int i = 0; i < days; i++) {
+            incrementDay();
+        }
+        return *this;
+    }
+
+    Date& operator-=(int days) {
+        for (int i = 0; i < days; i++) {
+            day--;
+        }
+        return *this;
+    }
+
+    int operator()() const {
+        return day;
+    }
+};
+
+std::istream& operator>>(std::istream& is, Date& date) {
+    is >> date.day >> date.month >> date.year;
+    return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const Date& date) {
+    os << date.day << "/" << date.month << "/" << date.year;
+    return os;
+}
+
+int main() {
+    Date today(1, 1, 2022);
+
+    std::cout << "Today's date: " << today << std::endl;
+
+    ++today;
+    std::cout << "Date after incrementing: " << today << std::endl;
+
+    --today;
+    std::cout << "Date after decrementing: " << today << std::endl;
+
+    Date tomorrow = today;
+    ++tomorrow;
+    std::cout << "Tomorrow's date: " << tomorrow << std::endl;
+
+    Date yesterday = today;
+    --yesterday;
+    std::cout << "Yesterday's date: " << yesterday << std::endl;
+
+    if (today != tomorrow) {
+        std::cout << "Today and tomorrow are not the same.\n";
+    }
+
+    if (today == yesterday) {
+        std::cout << "Today and yesterday are the same.\n";
+    }
+
+    if (today > yesterday) {
+        std::cout << "Today is later than yesterday.\n";
+    }
+
+    if (today < tomorrow) {
+        std::cout << "Today is earlier than tomorrow.\n";
+    }
+
+    Date futureDate;
+    std::cout << "Enter a future date (day month year): ";
+    std::cin >> futureDate;
+
+    if (futureDate > today) {
+        std::cout << "The future date is later than today.\n";
+    }
+    else {
+        std::cout << "The future date is not later than today.\n";
+    }
+
+    today += 5;
+    std::cout << "Date after adding 5 days: " << today << std::endl;
+
+    today -= 3;
+    std::cout << "Date after subtracting 3 days: " << today << std::endl;
+
+    int dayOfMonth = today();
+    std::cout << "Day of the month: " << dayOfMonth << std::endl;
+
+    return 0;
+}
